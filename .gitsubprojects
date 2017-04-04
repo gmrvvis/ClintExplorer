@@ -1,1 +1,2 @@
 # -*- mode: cmake -*-
+git_subproject(manco git@gitlab.gmrv.es:crodriguez/manco.git develop)

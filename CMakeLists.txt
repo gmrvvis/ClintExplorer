@@ -31,9 +31,11 @@ include(Common)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 common_find_package( Boost REQUIRED COMPONENTS system thread )
+common_find_package( manco REQUIRED )
 
 list(APPEND CLINTEXPLORER_DEPENDENT_LIBRARIES 
   Boost
+  manco
 )
 
 common_find_package_post( )

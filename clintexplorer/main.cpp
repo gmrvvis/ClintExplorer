@@ -1,6 +1,8 @@
 #include <iostream>
 #include <boost/asio.hpp>
 
+#include <manco/manco.h>
+
 namespace asio = boost::asio;
 
 std::string readline( asio::ip::tcp::socket & socket )
@@ -27,6 +29,10 @@ int main( void )
       io_service,
       asio::ip::tcp::endpoint( asio::ip::tcp::v4(), 31400 ) );
   asio::ip::tcp::socket socket(io_service);
+
+
+  manco::ZeqManager::init( "hbp://" );
+
 
   std::cout << "Started TCP socket at localhost at port 31400" << std::endl;
 
