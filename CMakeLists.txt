@@ -30,15 +30,23 @@ include(Common)
 # Allow warnings
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
-common_find_package( Boost REQUIRED COMPONENTS system thread )
+common_find_package( Qt5 SYSTEM REQUIRED COMPONENTS Core WebEngineWidgets WebSockets)
 common_find_package( manco REQUIRED )
 
 list(APPEND CLINTEXPLORER_DEPENDENT_LIBRARIES 
-  Boost
+  Qt5
   manco
 )
 
 common_find_package_post( )
+
+if( MSVC )
+  # Allow warnings
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w" )
+
+  # Set ClintExplorer as startup project on Visual Studio, CMake v3.6
+  #set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "ClintExplorer")
+endif( )
 
 add_subdirectory( clintexplorer )
 
