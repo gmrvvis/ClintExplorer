@@ -28,7 +28,7 @@ set(COMMON_PROJECT_DOMAIN Fernando Trincado)
 include(Common)
 
 # Allow warnings
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 common_find_package( Qt5 SYSTEM REQUIRED COMPONENTS Core WebEngineWidgets WebSockets)
 common_find_package( manco REQUIRED )

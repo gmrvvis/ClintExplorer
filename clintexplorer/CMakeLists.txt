@@ -18,11 +18,14 @@ set(CLINTEXPLORER_SOURCES
   ${PROJECT_BINARY_DIR}/src/version.cpp
   main.cpp
   TcpSocketAsyncServer.cpp
+  ClintProcess.cpp
 )
 
 set(CLINTEXPLORER_HEADERS
   ${PROJECT_BINARY_DIR}/include/clintexplorer/version.h
   TcpSocketAsyncServer.hpp
+  ClintProcess.hpp
+  Definitions.hpp
   utils/Auxiliars.hpp
 )
 

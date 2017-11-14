@@ -1,97 +1,120 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <map>
+#include <memory>
 #include <QApplication>
 #include <QProcess>
-#include <QWebEngineView>
-#include <QWebEngineProfile>
+
 #include "TcpSocketAsyncServer.hpp"
+#include "ClintProcess.hpp"
+#include "Definitions.hpp"
 #include "utils/Auxiliars.hpp"
 
-#define DEFAULT_ZEQ_SESSION "hbp://"
-#define DEFAULT_SOCKET_PORT "31400"
-#define DEFAULT_CLINT_HOST "http://localhost"
-#define DEFAULT_CLINT_PORT "3652"
+static std::string _zeqSession = DEFAULT_ZEQ_SESSION;
+static unsigned int _socketPort = DEFAULT_SOCKET_PORT;
+static std::string _clintHost = DEFAULT_CLINT_HOST;
+static unsigned int _clintPort = DEFAULT_CLINT_PORT;
+static std::string _file = "";
+
+void parseArgs(int argc, char** argv);
 
 int main( int argc, char* argv[] )
 {
-  //Parse args
-  std::map<std::string, std::string> args = Auxiliars::splitArgs( argc, argv );
-
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
 
-  //ZeqSession
-  auto it = args.find( "-z" );
-  if ( it == args.end( ) )
-  {
-    args["-z"] = DEFAULT_ZEQ_SESSION;
-  }
+  //Parse args
+  parseArgs(argc, argv);  
 
-  //Socket port
-  it = args.find( "-sp" );
-  if ( it == args.end( ) )
-  {
-    args["-sp"] = DEFAULT_SOCKET_PORT;
-  }
-
-  //Clint Host
-  it = args.find( "-ch" );
-  if ( it == args.end( ) )
-  {
-    args["-ch"] = DEFAULT_CLINT_HOST;
-  }
-
-  //Clint Port
-  it = args.find( "-cp" );
-  if ( it == args.end( ) )
-  {
-    args["-cp"] = DEFAULT_CLINT_PORT;
-  }
-
-  std::cout << "Zeq Session: " << args["-z"] << "\n" <<
-    "Socket Port: " << args["-sp"] << "\n" <<
-    "Clint URL: " << args["-ch"] << ":" << args["-cp"] <<
+  //Show args
+  std::cout << "ZeroEQ session: " << _zeqSession << "\n" <<
+    "Socket Port: " << _socketPort << "\n" <<
+    "Clint URL: " << _clintHost << ":" << _clintPort <<
     std::endl;
 
-  std::string zeqSession = args["-z"];
-  quint16 socketPort = QString( args["-sp"].c_str() ).toUShort();
-  std::string clintUrl = args["-ch"] + ":" + args["-cp"];
-  unsigned int clintPort = static_cast<unsigned int>( std::stoi( args["-cp"] ) );
-
-  //Zeq session
-  std::cout << "Init ZeqSession (" << zeqSession << ")..." << std::endl;
-  manco::ZeqManager::instance( ).init( zeqSession );
+  //Init Zeq session
+  std::cout << "Init ZeqSession (" << _zeqSession << ")..." << std::endl;
+  manco::ZeqManager::instance( ).init( _zeqSession );
 
   //Clint process
-  std::cout << "Starting Clint..." << std::endl;
-  QString clintApp = QString( "R" );
-  QStringList clintArguments;
-  std::string clint = qApp->applicationDirPath().toStdString() + "/CLINTv4.R";
-  std::string shiny = "shiny::runApp(appDir = '" + clint + "', port = " +
-    std::to_string( clintPort ) + ")";
-  clintArguments << QString( "-e" );
-  clintArguments << QString::fromStdString( shiny );
-
-  std::unique_ptr<QProcess> qProcess( new QProcess( ) );
-  qProcess->setWorkingDirectory( qApp->applicationDirPath( ) );
-  qProcess->setReadChannel( QProcess::StandardOutput );
-  //qProcess->setProcessChannelMode(QProcess::ForwardedChannels); //debug
-  qProcess->waitForReadyRead( );
-  qProcess->readAllStandardOutput( );
-  qProcess->start( clintApp, clintArguments );
-
-  std::cout << "Starting Clint browser..." << std::endl;
-  QWebEngineView view;
-  view.page()->profile()->setHttpCacheType(QWebEngineProfile::NoCache);
-  view.setUrl(QUrl(QString::fromStdString(clintUrl)));
-  view.setWindowTitle(QString("Clint - " + QString::number(clintPort)));
-  view.showMaximized();
+  std::cout << "Starting Clint process..." << std::endl;
+  std::unique_ptr<ClintProcess> clintProcess( new ClintProcess( _clintHost, std::to_string(_clintPort) ) );
 
   //Tcp async socket
-  TcpSocketAsyncServer* server = new TcpSocketAsyncServer( socketPort );
+  TcpSocketAsyncServer* server = new TcpSocketAsyncServer( static_cast<quint16>( _socketPort ) );
   QObject::connect(server, &TcpSocketAsyncServer::closed, &app, &QCoreApplication::quit);
 
   //Launch app
   return app.exec();
 }
+
+void parseArgs(int argc, char** argv)
+{
+  std::map<std::string, std::string> args = Auxiliars::splitArgs(argc, argv);
+
+  //ZeqSession
+  auto it = args.find("-z");
+  if (it != args.end())
+  {
+    _zeqSession = it->second;
+  }
+
+  //Socket port
+  it = args.find("-sp");
+  if (it != args.end())
+  {
+    try
+    {
+      _socketPort = static_cast<unsigned short>(std::stoi(it->second));
+      if (!Auxiliars::inRange<int>(static_cast<int>(_socketPort),
+        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED))
+      {
+        std::cout << "Invalid socket port. Please, enter port number between " <<
+          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
+          ". Using default socket port " << DEFAULT_SOCKET_PORT << "..." << std::endl;
+        _socketPort = DEFAULT_SOCKET_PORT;
+      }
+    }
+    catch (...)
+    {
+      std::cout << "Invalid socket port. Please, enter port number between " <<
+        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
+        ". Using default socket port " << DEFAULT_SOCKET_PORT << "..." << std::endl;
+      _socketPort = DEFAULT_SOCKET_PORT;
+    }
+  }
+
+  //Clint Host
+  it = args.find("-ch");
+  if (it != args.end())
+  {
+    _clintHost = it->second;
+  }
+
+  //Clint Port
+  it = args.find("-cp");
+  if (it != args.end())
+  {
+    try
+    {
+      _clintPort = static_cast<unsigned short>(std::stoi(it->second));
+      if (!Auxiliars::inRange<int>(static_cast<int>(_clintPort),
+        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED))
+      {
+        std::cout << "Invalid Clint port. Please, enter port number between " <<
+          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
+          ". Using Clint default port " << DEFAULT_CLINT_PORT << "..." << std::endl;
+        _clintPort = DEFAULT_CLINT_PORT;
+      }
+    }
+    catch (...)
+    {
+      std::cout << "Invalid Clint port. Please, enter port number between " <<
+        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
+        ". Using default Clint port " << DEFAULT_CLINT_PORT << "..." << std::endl;
+      _clintPort = DEFAULT_CLINT_PORT;
+    }
+  }
+}
+

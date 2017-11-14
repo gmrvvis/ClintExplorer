@@ -1,0 +1,13 @@
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+#define APPLICATION_NAME "Clint Explorer"
+
+#define DEFAULT_ZEQ_SESSION "hbp://"
+#define DEFAULT_SOCKET_PORT 31400
+#define DEFAULT_CLINT_HOST "http://localhost"
+#define DEFAULT_CLINT_PORT 3652
+#define MIN_PORT_ALLOWED 1024
+#define MAX_PORT_ALLOWED 65535
+
+#endif
