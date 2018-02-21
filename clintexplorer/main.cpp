@@ -9,112 +9,97 @@
 #include "TcpSocketAsyncServer.hpp"
 #include "ClintProcess.hpp"
 #include "Definitions.hpp"
-#include "utils/Auxiliars.hpp"
 
-static std::string _zeqSession = DEFAULT_ZEQ_SESSION;
-static unsigned int _socketPort = DEFAULT_SOCKET_PORT;
-static std::string _clintHost = DEFAULT_CLINT_HOST;
-static unsigned int _clintPort = DEFAULT_CLINT_PORT;
-static std::string _file = "";
-
-void parseArgs(int argc, char** argv);
+#include <sp1common/Args.hpp>
+#include <sp1common/Common.hpp>
 
 int main( int argc, char* argv[] )
 {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
 
+  //Args
+  std::string zeqSession( "" );
+  std::string socketPort( "" );
+  unsigned int iSocketPort( 0 );
+  std::string clintHost( "" );
+  std::string clintPort( "" );
+  unsigned int iClintPort( 0 );
+
   //Parse args
-  parseArgs(argc, argv);  
-
-  //Show args
-  std::cout << "ZeroEQ session: " << _zeqSession << "\n" <<
-    "Socket Port: " << _socketPort << "\n" <<
-    "Clint URL: " << _clintHost << ":" << _clintPort <<
-    std::endl;
-
-  //Init Zeq session
-  std::cout << "Init ZeqSession (" << _zeqSession << ")..." << std::endl;
-  manco::ZeqManager::instance( ).init( _zeqSession );
-
-  //Clint process
-  std::cout << "Starting Clint process..." << std::endl;
-  std::unique_ptr<ClintProcess> clintProcess( new ClintProcess( _clintHost, std::to_string(_clintPort) ) );
-
-  //Tcp async socket
-  TcpSocketAsyncServer* server = new TcpSocketAsyncServer( static_cast<quint16>( _socketPort ) );
-  QObject::connect(server, &TcpSocketAsyncServer::closed, &app, &QCoreApplication::quit);
-
-  //Launch app
-  return app.exec();
-}
-
-void parseArgs(int argc, char** argv)
-{
-  std::map<std::string, std::string> args = Auxiliars::splitArgs(argc, argv);
+  sp1common::Args args( argc, argv );
 
   //ZeqSession
-  auto it = args.find("-z");
-  if (it != args.end())
-  {
-    _zeqSession = it->second;
-  }
+  zeqSession = args.get( "-z" );
 
   //Socket port
-  it = args.find("-sp");
-  if (it != args.end())
+  socketPort = args.get( "-sp" );
+  if( !socketPort.empty( ) )
   {
     try
     {
-      _socketPort = static_cast<unsigned short>(std::stoi(it->second));
-      if (!Auxiliars::inRange<int>(static_cast<int>(_socketPort),
-        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED))
+      iSocketPort = static_cast<unsigned short>( std::stoi( socketPort ) );
+      if( !sp1common::Common::inRange<int>( static_cast<int>( iSocketPort ),
+        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
         std::cout << "Invalid socket port. Please, enter port number between " <<
-          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
-          ". Using default socket port " << DEFAULT_SOCKET_PORT << "..." << std::endl;
-        _socketPort = DEFAULT_SOCKET_PORT;
+          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+        exit( -1 );
       }
     }
-    catch (...)
+    catch( ... )
     {
       std::cout << "Invalid socket port. Please, enter port number between " <<
-        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
-        ". Using default socket port " << DEFAULT_SOCKET_PORT << "..." << std::endl;
-      _socketPort = DEFAULT_SOCKET_PORT;
+        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+      exit( -1 );
     }
   }
 
   //Clint Host
-  it = args.find("-ch");
-  if (it != args.end())
-  {
-    _clintHost = it->second;
-  }
+  clintHost = args.get( "-ch" );
 
   //Clint Port
-  it = args.find("-cp");
-  if (it != args.end())
+  clintPort = args.get( "-cp" );
+  if( !clintPort.empty( ) )
   {
     try
     {
-      _clintPort = static_cast<unsigned short>(std::stoi(it->second));
-      if (!Auxiliars::inRange<int>(static_cast<int>(_clintPort),
-        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED))
+      iClintPort = static_cast<unsigned short>( std::stoi( clintPort ) );
+      if( !sp1common::Common::inRange<int>( static_cast<int>( iClintPort ),
+        MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
         std::cout << "Invalid Clint port. Please, enter port number between " <<
-          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
-          ". Using Clint default port " << DEFAULT_CLINT_PORT << "..." << std::endl;
-        _clintPort = DEFAULT_CLINT_PORT;
+          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+        exit( -1 );
       }
     }
-    catch (...)
+    catch( ... )
     {
       std::cout << "Invalid Clint port. Please, enter port number between " <<
-        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED <<
-        ". Using default Clint port " << DEFAULT_CLINT_PORT << "..." << std::endl;
-      _clintPort = DEFAULT_CLINT_PORT;
+        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+      exit( -1 );
     }
   }
+
+  //Show args
+  std::cout << "ZeroEQ session: " << zeqSession << "\n" <<
+    "Socket Port: " << iSocketPort << "\n" <<
+    "Clint URL: " << clintHost << ":" << iClintPort <<
+    std::endl;
+
+  //Init Zeq session
+  std::cout << "Init ZeqSession (" << zeqSession << ")..." << std::endl;
+  manco::ZeqManager::instance( ).init( zeqSession );
+
+  //Clint process
+  std::cout << "Starting Clint process..." << std::endl;
+  std::unique_ptr<ClintProcess> clintProcess( new ClintProcess( clintHost, std::to_string(iClintPort) ) );
+
+  //Tcp async socket
+  TcpSocketAsyncServer* server = new TcpSocketAsyncServer( static_cast<quint16>( iSocketPort ) );
+  QObject::connect(server, &TcpSocketAsyncServer::closed, &app, &QCoreApplication::quit);
+
+  //Launch app
+  return app.exec();
 }
 

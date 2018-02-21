@@ -3,6 +3,8 @@
 TcpSocketAsyncServer::TcpSocketAsyncServer( quint16 port, QObject *parent )
   : QTcpServer( parent )
 {
+  std::string clintId = sp1common::Common::randomString( 5 );
+  _owner = manco::ZeqManager::getOwner( manco::ApplicationType::CLINT, clintId );
   /*_serverSocket = new QTcpServer( this );
 
   connect(_serverSocket, SIGNAL(newConnection()),
@@ -89,9 +91,9 @@ void TcpSocketAsyncServer::manageMessage( const std::string& str )
     unsigned int color_blue= atoi(ids_vector1[3].c_str());
 
     std::string key_name = manco::ZeqManager::getKeyOwner(ids_vector1[0],
-      manco::CLINT);
+      _owner );
 
     manco::ZeqManager::instance().publishSyncGroup( key_name, ids_vector1[0],
-      manco::CLINT, ids_vector, color_red, color_green, color_blue);
+      _owner, ids_vector, color_red, color_green, color_blue);
   }
 }

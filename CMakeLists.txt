@@ -1,6 +1,18 @@
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(ClintExplorer VERSION 1.0.0 )
-set(ClintExplorer_VERSION_ABI 1)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#   ClintExplorer
+#   2017 (c) GMRV / Universidad Rey Juan Carlos
+#   gmrv@gmrv.es
+#   www.gmrv.es
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+cmake_minimum_required( VERSION 3.1 )
+set( PROJECT_VERSION_MAJOR "1" )
+set( PROJECT_VERSION_MINOR "0" )
+set( PROJECT_VERSION_PATCH "0" )
+set( PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
+project( ClintExplorer VERSION ${PROJECT_VERSION} )
+set( ClintExplorer_VERSION_ABI 1 )
 
 # Disable in source building
 if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
@@ -22,35 +34,44 @@ endif( )
 
 include(GitExternal)
 
-set(CLINTEXPLORER_DESCRIPTION "ClintExplorer")
-set(COMMON_PROJECT_DOMAIN Fernando Trincado)
+set(CLINTEXPLORER_DESCRIPTION "Clint Explorer")
+set(COMMON_PROJECT_DOMAIN gmrv.es)
 
 include(Common)
 
 # Allow warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
-common_find_package( Qt5 SYSTEM REQUIRED COMPONENTS Core WebEngineWidgets WebSockets)
+common_find_package( Qt5Core SYSTEM REQUIRED )
+common_find_package( Qt5WebEngineWidgets SYSTEM REQUIRED )
+common_find_package( Qt5WebSockets SYSTEM REQUIRED )
 common_find_package( manco REQUIRED )
+common_find_package( sp1common REQUIRED )
 
 list(APPEND CLINTEXPLORER_DEPENDENT_LIBRARIES 
-  Qt5
+  Qt5::Core
+  Qt5::WebEngineWidgets
+  Qt5::WebSockets
   manco
+  sp1common
 )
 
 common_find_package_post( )
 
-if( MSVC )
-  # Allow warnings
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w" )
-
-  # Set ClintExplorer as startup project on Visual Studio, CMake v3.6
-  #set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT "ClintExplorer")
-endif( )
+# Allow warnings
+# set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w" )
 
 add_subdirectory( clintexplorer )
 
-set(DOXYGEN_MAINPAGE_MD ${PROJECT_SOURCE_DIR}/README.md)
-set(DOXYGEN_EXTRA_INPUT ${DOXYGEN_MAINPAGE_MD})
-include(CPackConfig)
-include(DoxygenRule)
+if( MSVC )
+  # Set ClintExplorer as startup project on Visual Studio, CMake v3.6
+  if( CMAKE_VERSION VERSION_GREATER 3.6 )
+    set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ClintExplorer )
+  endif( )
+endif( )
+
+set( DOXYGEN_MAINPAGE_MD README.md )
+set( DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md )
+include( DoxygenRule )
+
+include( CPackConfig )

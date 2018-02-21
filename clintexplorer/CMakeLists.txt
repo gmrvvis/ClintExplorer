@@ -26,17 +26,23 @@ set(CLINTEXPLORER_HEADERS
   TcpSocketAsyncServer.hpp
   ClintProcess.hpp
   Definitions.hpp
-  utils/Auxiliars.hpp
 )
 
 set(CLINTEXPLORER_LINK_LIBRARIES
-    Qt5::Core
-    Qt5::WebEngineWidgets
-    Qt5::WebSockets
-    manco
+  Qt5::Core
+  Qt5::WebEngineWidgets
+  Qt5::WebSockets
+  manco
+  sp1common
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_BINARY_DIR}/src)
+
+if( MSVC )
+  add_definitions("-W4")
+  # Static build
+  add_definitions( -DCLINTEXPLORER_STATIC )
+endif( )
 
 common_application(ClintExplorer)

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <manco/manco.h>
+#include <sp1common/Common.hpp>
 
 #define CLOSE_SERVER_MESSAGE "exit"
 
@@ -34,6 +35,7 @@ class TcpSocketAsyncServer : public QTcpServer
   private:
     //QTcpServer* _serverSocket;
     void manageMessage( const std::string& str );
+    std::string _owner;
 };
 
 #endif
