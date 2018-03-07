@@ -81,6 +81,11 @@ int main( int argc, char* argv[] )
 
   //Clint R Path
   clintPath = args.get( "-ce" );
+  if ( !sp1common::Common::fileExists( clintPath ) )
+  {
+    std::cerr << "Error: file '" << clintPath << "' doesn't exist!" << std::endl;
+    return -1;
+  }
 
   //Clint Host
   clintHost = args.get( "-ch" );
