@@ -1,14 +1,13 @@
 #include "ClintProcess.hpp"
 
-ClintProcess::ClintProcess(std::string clintHost, std::string clintPort, QObject *parent )
+ClintProcess::ClintProcess( const std::string& clintPath,
+  const std::string& clintHost, const std::string& clintPort, QObject *parent )
   : QObject( parent )
   , _clintHost( clintHost )
   , _clintPort( clintPort )
 {
   QString clintApp = QString("R");
-
-  std::string clint = qApp->applicationDirPath().toStdString() + "/../clint/CLINTv4.R";
-  std::string shiny = "shiny::runApp(appDir='" + clint + "',port=" + clintPort + ")";
+  std::string shiny = "shiny::runApp(appDir='" + clintPath + "',port=" + clintPort + ")";
   QStringList clintArguments;
     clintArguments << QString("-e");
     clintArguments << QString::fromStdString(shiny);

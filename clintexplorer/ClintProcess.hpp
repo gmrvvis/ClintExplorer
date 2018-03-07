@@ -14,7 +14,8 @@ class ClintProcess : public QObject
 {
   Q_OBJECT
   public:
-    explicit ClintProcess(std::string clintHost, std::string clintPort, QObject *parent = 0 );
+    explicit ClintProcess( const std::string& clintPath,
+      const std::string& clintHost, const std::string& clintPort, QObject *parent = 0 );
 
   private:
     std::string _clintHost;

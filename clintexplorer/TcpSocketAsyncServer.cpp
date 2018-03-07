@@ -65,8 +65,10 @@ void TcpSocketAsyncServer::readyRead()
     buffer.open(QIODevice::WriteOnly);
     buffer.write(socket->readAll());
 
-    QString message = QString::fromUtf8(buffer.data());
-    std::cout << "message: " << message.toStdString() << std::endl;
+    QString message = QString::fromUtf8(buffer.data( ) );
+    std::cout << "message: " << message.toStdString( ) << std::endl;
+
+    manageMessage( message.toStdString( ) );
   }
 }
 
