@@ -47,7 +47,7 @@ int main( int argc, char* argv[] )
   //Parse args
   sp1common::Args args( argc, argv );
 
-  if ( args.has( "-h") )
+  if ( ( argc == 1 ) || ( args.has( "-h" ) ) )
   {
     showHelpInfo( argv[0] );
     return 0;
