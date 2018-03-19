@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 #include <manco/manco.h>
-#include <sp1common/Common.hpp>
+#include <sp1common/sp1common.h>
 
 #define CLOSE_SERVER_MESSAGE "exit"
 

@@ -10,8 +10,7 @@
 #include "ClintProcess.hpp"
 #include "Definitions.hpp"
 
-#include <sp1common/Args.hpp>
-#include <sp1common/Common.hpp>
+#include <sp1common/sp1common.h>
 
 void showHelpInfo( char *argv0 )
 {
@@ -63,7 +62,7 @@ int main( int argc, char* argv[] )
     try
     {
       iSocketPort = static_cast<unsigned short>( std::stoi( socketPort ) );
-      if( !sp1common::Common::inRange<int>( static_cast<int>( iSocketPort ),
+      if( !sp1common::Maths::inRange<int>( static_cast<int>( iSocketPort ),
         MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
         std::cout << "Invalid socket port. Please, enter port number between " <<
@@ -81,7 +80,7 @@ int main( int argc, char* argv[] )
 
   //Clint R Path
   clintPath = args.get( "-ce" );
-  if ( !sp1common::Common::fileExists( clintPath ) )
+  if ( !sp1common::Files::fileExists( clintPath ) )
   {
     std::cerr << "Error: file '" << clintPath << "' doesn't exist!" << std::endl;
     return -1;
@@ -97,7 +96,7 @@ int main( int argc, char* argv[] )
     try
     {
       iClintPort = static_cast<unsigned short>( std::stoi( clintPort ) );
-      if( !sp1common::Common::inRange<int>( static_cast<int>( iClintPort ),
+      if( !sp1common::Maths::inRange<int>( static_cast<int>( iClintPort ),
         MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
         std::cout << "Invalid Clint port. Please, enter port number between " <<

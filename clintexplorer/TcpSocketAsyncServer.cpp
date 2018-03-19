@@ -3,7 +3,7 @@
 TcpSocketAsyncServer::TcpSocketAsyncServer( quint16 port, QObject *parent )
   : QTcpServer( parent )
 {
-  std::string clintId = sp1common::Common::randomString( 5 );
+  std::string clintId = sp1common::Strings::generateRandom( 5 );
   _owner = manco::ZeqManager::getOwner( manco::ApplicationType::CLINT, clintId );
   /*_serverSocket = new QTcpServer( this );
 
