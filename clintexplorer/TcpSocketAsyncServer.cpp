@@ -1,10 +1,12 @@
 #include "TcpSocketAsyncServer.hpp"
 
-TcpSocketAsyncServer::TcpSocketAsyncServer( quint16 port, QObject *parent )
+TcpSocketAsyncServer::TcpSocketAsyncServer( const quint16& port,
+  const std::string& instanceId, QObject *parent )
   : QTcpServer( parent )
 {
-  std::string clintId = sp1common::Strings::generateRandom( 5 );
-  _owner = manco::ZeqManager::getOwner( manco::ApplicationType::CLINT, clintId );
+  _owner = manco::ZeqManager::getOwner( manco::ApplicationType::CLINT,
+    instanceId );
+
   /*_serverSocket = new QTcpServer( this );
 
   connect(_serverSocket, SIGNAL(newConnection()),

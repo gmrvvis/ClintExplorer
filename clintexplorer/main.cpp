@@ -15,7 +15,8 @@
 void showHelpInfo( char *argv0 )
 {
   std::stringstream message;
-  message << "\nUsage:\t" << argv0 << " [-z value -sp value] [-ce value -ch value -cp value]\n\n"
+  message << "\nUsage:\t" << argv0
+    << " [-z value -sp value] [-ce value -ch value -cp value]\n\n"
     << "Options:\n"
     << "\t-h Show help information\n"
     << "\t-z ZeroEQ session\n"
@@ -42,6 +43,7 @@ int main( int argc, char* argv[] )
   std::string clintHost( "" );
   std::string clintPort( "" );
   unsigned int iClintPort( 0 );
+  std::string instanceId( "" );
 
   //Parse args
   sp1common::Args args( argc, argv );
@@ -65,15 +67,15 @@ int main( int argc, char* argv[] )
       if( !sp1common::Maths::inRange<int>( static_cast<int>( iSocketPort ),
         MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
-        std::cout << "Invalid socket port. Please, enter port number between " <<
-          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+        std::cout << "Invalid socket port. Please, enter port number between "
+          << MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
         exit( -1 );
       }
     }
     catch( ... )
     {
-      std::cout << "Invalid socket port. Please, enter port number between " <<
-        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
+      std::cout << "Invalid socket port. Please, enter port number between "
+        << MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
       exit( -1 );
     }
   }
@@ -82,7 +84,8 @@ int main( int argc, char* argv[] )
   clintPath = args.get( "-ce" );
   if ( !sp1common::Files::fileExists( clintPath ) )
   {
-    std::cerr << "Error: file '" << clintPath << "' doesn't exist!" << std::endl;
+    std::cerr << "Error: file '" << clintPath << "' doesn't exist!"
+      << std::endl;
     return -1;
   }
 
@@ -112,8 +115,14 @@ int main( int argc, char* argv[] )
     }
   }
 
-  bool enableCommunication = ( ( !zeqSession.empty( ) ) && ( !socketPort.empty( ) ) );
-  bool openClint = ( ( !clintPath.empty( ) ) && ( !clintHost.empty( ) ) && ( !clintPort.empty( ) ) );
+  instanceId = args.has( "-id" )
+    ? args.get( "-id" )
+    : sp1common::Strings::generateRandom( 5 );
+
+  bool enableCommunication = ( ( !zeqSession.empty( ) )
+    && ( !socketPort.empty( ) ) );
+  bool openClint = ( ( !clintPath.empty( ) ) && ( !clintHost.empty( ) )
+    && ( !clintPort.empty( ) ) );
 
   if ( ( !enableCommunication ) && ( !openClint) )
   {
@@ -152,10 +161,12 @@ int main( int argc, char* argv[] )
   }
 
   if ( enableCommunication )
-  {
+  {      
     //Tcp async socket
-    TcpSocketAsyncServer* server = new TcpSocketAsyncServer( static_cast<quint16>( iSocketPort ) );
-    QObject::connect(server, &TcpSocketAsyncServer::closed, &app, &QCoreApplication::quit);
+    TcpSocketAsyncServer* server = new TcpSocketAsyncServer(
+      static_cast<quint16>( iSocketPort ), instanceId );
+    QObject::connect(server, &TcpSocketAsyncServer::closed, &app,
+      &QCoreApplication::quit);
   }
 
   //Launch app

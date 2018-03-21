@@ -17,7 +17,8 @@ class TcpSocketAsyncServer : public QTcpServer
   Q_OBJECT
 
   public:
-    explicit TcpSocketAsyncServer( quint16 port, QObject* parent = 0 );
+    explicit TcpSocketAsyncServer( const quint16& port,
+      const std::string& instanceId, QObject* parent = 0 );
     void start( quint16 port );
     ~TcpSocketAsyncServer();
 
