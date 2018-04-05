@@ -4,8 +4,8 @@ TcpSocketAsyncServer::TcpSocketAsyncServer( const quint16& port,
   const std::string& instanceId, QObject *parent )
   : QTcpServer( parent )
 {
-  _owner = manco::ZeqManager::getOwner( manco::ApplicationType::CLINT,
-    instanceId );
+  _owner = toString( sp1common::ApplicationType::CLINT )
+    + instanceId;
 
   /*_serverSocket = new QTcpServer( this );
 
