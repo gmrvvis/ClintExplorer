@@ -81,12 +81,15 @@ int main( int argc, char* argv[] )
   }
 
   //Clint R Path
-  clintPath = args.get( "-ce" );
-  if ( !sp1common::Files::fileExists( clintPath ) )
+  if ( args.has( "-ce" ) )
   {
-    std::cerr << "Error: file '" << clintPath << "' doesn't exist!"
-      << std::endl;
-    return -1;
+    clintPath = args.get( "-ce" );
+    if ( !sp1common::Files::fileExists( clintPath ) )
+    {
+      std::cerr << "Error: file '" << clintPath << "' doesn't exist!"
+        << std::endl;
+      return -1;
+    }
   }
 
   //Clint Host
@@ -121,8 +124,7 @@ int main( int argc, char* argv[] )
 
   bool enableCommunication = ( ( !zeqSession.empty( ) )
     && ( !socketPort.empty( ) ) );
-  bool openClint = ( ( !clintPath.empty( ) ) && ( !clintHost.empty( ) )
-    && ( !clintPort.empty( ) ) );
+  bool openClint = ( ( !clintHost.empty( ) ) && ( !clintPort.empty( ) ) );
 
   if ( ( !enableCommunication ) && ( !openClint) )
   {
@@ -138,10 +140,14 @@ int main( int argc, char* argv[] )
     message << "ZeroEQ session: " << zeqSession << "\n"
       << "Socket Port: " << iSocketPort << "\n";
   }
+  if ( !clintPath.empty( ) )
+  {
+    message << APPLICATION_NAME << " in standalone mode." << "\n"
+      << "Clint path: " << clintPath << "\n";
+  }
   if ( openClint )
   {
-    message << "Clint path: " << clintPath << "\n"
-      << "Clint URL: " << clintHost << ":" << iClintPort << "\n";
+    message << "Clint URL: " << clintHost << ":" << iClintPort << "\n";
   }
   std::cout << message.str( ) << std::endl;
 
@@ -152,7 +158,7 @@ int main( int argc, char* argv[] )
     manco::ZeqManager::instance( ).init( zeqSession );
   }
 
-  if ( openClint )
+  if ( !clintPath.empty( ) )
   {
     //Clint process
     std::cout << "Starting Clint process..." << std::endl;
