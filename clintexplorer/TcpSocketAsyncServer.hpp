@@ -18,7 +18,8 @@ class TcpSocketAsyncServer : public QTcpServer
 
   public:
     explicit TcpSocketAsyncServer( const quint16& port,
-      const std::string& instanceId, QObject* parent = 0 );
+      const std::string& instanceId, const std::string& file = std::string( ),
+      QObject* parent = 0 );
     void start( quint16 port );
     ~TcpSocketAsyncServer();
 
@@ -37,6 +38,7 @@ class TcpSocketAsyncServer : public QTcpServer
     //QTcpServer* _serverSocket;
     void manageMessage( const std::string& str );
     std::string _owner;
+    std::string _file;
 };
 
 #endif

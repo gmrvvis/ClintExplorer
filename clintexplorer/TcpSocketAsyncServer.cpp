@@ -1,8 +1,9 @@
 #include "TcpSocketAsyncServer.hpp"
 
 TcpSocketAsyncServer::TcpSocketAsyncServer( const quint16& port,
-  const std::string& instanceId, QObject *parent )
+  const std::string& instanceId, const std::string& file, QObject *parent )
   : QTcpServer( parent )
+  , _file( file )
 {
   _owner = toString( sp1common::ApplicationType::CLINT )
     + instanceId;
@@ -70,7 +71,15 @@ void TcpSocketAsyncServer::readyRead()
     QString message = QString::fromUtf8(buffer.data( ) );
     std::cout << "message: " << message.toStdString( ) << std::endl;
 
-    manageMessage( message.toStdString( ) );
+    if ( ( message == "file" ) && ( !_file.empty( ) ) )
+    {
+      const char* response = sp1common::Files::readRawCsv( _file ).c_str( );
+      socket->write(response);
+    }
+    else
+    {
+      manageMessage( message.toStdString( ) );
+    }
   }
 }
 

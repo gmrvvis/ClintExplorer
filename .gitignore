@@ -12,3 +12,13 @@ jambs*
 Debug*
 Release*
 RelWithDebInfo*
+CMakeLists.txt.user
+Lexis
+Servus
+ZeroBuf
+ZeroEQ
+gmrvlex
+manco
+sp1common
+vmmlib
+build

@@ -23,7 +23,8 @@ void showHelpInfo( char *argv0 )
     << "\t-sp Socket Port\n"
     << "\t-ce Clint Executable Path\n"
     << "\t-ch Clint Host\n"
-    << "\t-cp Clint Port\n\n"
+    << "\t-cp Clint Port\n"
+    << "\t-f File\n\n"
     << "Example:\n\n"
     << "\t ClintExplorer -z hbp:// -sp 31400 -ce \"../Clint/CLINTv5.R\" -ch \"http://localhost\" -cp 8765\n";
   std::cout << message.str( ) << std::endl;
@@ -44,6 +45,7 @@ int main( int argc, char* argv[] )
   std::string clintPort( "" );
   unsigned int iClintPort( 0 );
   std::string instanceId( "" );
+  std::string file( "" );
 
   //Parse args
   sp1common::Args args( argc, argv );
@@ -118,6 +120,11 @@ int main( int argc, char* argv[] )
     }
   }
 
+  if ( args.has( "-f" ) )
+  {
+    file = args.get( "-f" );
+  }
+
   instanceId = args.has( "-id" )
     ? args.get( "-id" )
     : sp1common::Strings::generateRandom( 5 );
@@ -170,7 +177,7 @@ int main( int argc, char* argv[] )
   {      
     //Tcp async socket
     TcpSocketAsyncServer* server = new TcpSocketAsyncServer(
-      static_cast<quint16>( iSocketPort ), instanceId );
+      static_cast<quint16>( iSocketPort ), instanceId, file );
     QObject::connect(server, &TcpSocketAsyncServer::closed, &app,
       &QCoreApplication::quit);
   }
