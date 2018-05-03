@@ -71,10 +71,18 @@ void TcpSocketAsyncServer::readyRead()
     QString message = QString::fromUtf8(buffer.data( ) );
     std::cout << "message: " << message.toStdString( ) << std::endl;
 
-    if ( ( message == "file" ) && ( !_file.empty( ) ) )
+    if ( message == "file" )
     {
-      const char* response = sp1common::Files::readRawCsv( _file ).c_str( );
-      socket->write(response);
+      if ( !_file.empty( ) )
+      {
+        const char* response = sp1common::Files::readRawCsv( _file ).c_str( );
+        socket->write(response);
+      }
+      else
+      {
+        const char* response = "nofile";
+        socket->write(response);
+      }
     }
     else
     {
