@@ -1,5 +1,5 @@
-#ifndef CLINTPROCESS_H
-#define CLINTPROCESS_H
+#ifndef CLINTEXPLORER_CLINTPROCESS_HPP
+#define CLINTEXPLORER_CLINTPROCESS_HPP
 
 #include <QObject>
 #include <QtCore/QtCore>

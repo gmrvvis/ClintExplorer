@@ -53,6 +53,7 @@ void 	ClintProcess::readyReadStandardOutput()
     std::cout << "Starting Clint browser..." << std::endl;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+    //_view.page()->profile( )->setHttpCacheType( QWebEngineProfile::NoCache );
     _view.page()->profile( )->setHttpCacheType( QWebEngineProfile::NoCache );
     _view.setUrl( QUrl( QString::fromStdString( _clintHost + ":" + _clintPort ) ) );
     _view.setWindowTitle( QString( "Clint - " ) + QString::fromStdString( _clintPort ) );

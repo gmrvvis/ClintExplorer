@@ -1,5 +1,5 @@
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#ifndef CLINTEXPLORER_DEFINITIONS_HPP
+#define CLINTEXPLORER_DEFINITIONS_HPP
 
 #define APPLICATION_NAME "Clint Explorer"
 
@@ -9,5 +9,9 @@
 #define DEFAULT_CLINT_PORT 3652
 #define MIN_PORT_ALLOWED 1024
 #define MAX_PORT_ALLOWED 65535
+
+#define SOCKET_MESSAGE_FILE "file\n"
+#define SOCKET_MESSAGE_NOFILE "nofile\n"
+#define SOCKET_MESSAGE_EXIT "exit\n"
 
 #endif

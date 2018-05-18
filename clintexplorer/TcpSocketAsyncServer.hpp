@@ -1,5 +1,5 @@
-#ifndef TCPSOCKETASYNCSERVER_H
-#define TCPSOCKETASYNCSERVER_H
+#ifndef CLINTEXPLORER_TCPSOCKETASYNCSERVER_HPP
+#define CLINTEXPLORER_TCPSOCKETASYNCSERVER_HPP
 
 #include <QObject>
 #include <QTcpSocket>
@@ -9,8 +9,7 @@
 #include <string>
 #include <manco/manco.h>
 #include <sp1common/sp1common.h>
-
-#define CLOSE_SERVER_MESSAGE "exit"
+#include "Definitions.hpp"
 
 class TcpSocketAsyncServer : public QTcpServer
 {
