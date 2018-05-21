@@ -9,10 +9,10 @@
 cmake_minimum_required( VERSION 3.1 )
 set( PROJECT_VERSION_MAJOR "1" )
 set( PROJECT_VERSION_MINOR "0" )
-set( PROJECT_VERSION_PATCH "0" )
+set( PROJECT_VERSION_PATCH "1" )
 set( PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} )
 project( ClintExplorer VERSION ${PROJECT_VERSION} )
-set( ClintExplorer_VERSION_ABI 1 )
+set( ClintExplorer_VERSION_ABI 2 )
 
 # Disable in source building
 if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )

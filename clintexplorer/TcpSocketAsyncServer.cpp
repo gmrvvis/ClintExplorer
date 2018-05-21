@@ -43,15 +43,13 @@ void TcpSocketAsyncServer::readyRead( )
   QTcpSocket* socket = dynamic_cast< QTcpSocket* >( sender( ) );
   if( socket )
   {
-    std::cout << "reading data" << std::endl;
-
     QBuffer buffer;
     buffer.open( QIODevice::WriteOnly );
     buffer.write( socket->readAll( ) );
 
     QString qMessage = QString::fromUtf8( buffer.data( ) );
-    sp1common::Debug::consoleMessage( "message: '" +
-      qMessage.trimmed( ).toStdString( ) );
+    sp1common::Debug::consoleMessage( "received message: '" +
+      qMessage.trimmed( ).toStdString( ) + "'");
 
     if ( qMessage == SOCKET_MESSAGE_FILE )
     {
@@ -65,12 +63,13 @@ void TcpSocketAsyncServer::readyRead( )
         sp1common::Debug::consoleMessage(
           "Requested file. Sending file size response" );
         socket->write( sizeResponse.c_str( ) );
-        socket->flush( );
+        socket->waitForBytesWritten( );
 
-        sp1common::Debug::consoleMessage( "Sending raw CSV file" );
-        const char* response = sp1common::Files::readRawCsv( _file ).c_str( );
-        socket->write(response);
-        socket->flush( );
+        sp1common::Debug::consoleMessage( "Sending CSV file" );
+        socket->write( rawCsv.c_str() );
+        socket->waitForBytesWritten( );
+
+        sp1common::Debug::consoleMessage( "CSV file sent" );
       }
       else
       {
@@ -78,7 +77,16 @@ void TcpSocketAsyncServer::readyRead( )
           "Requested file. Sending no file response" );
         const char* response = SOCKET_MESSAGE_NOFILE;
         socket->write( response );
-        socket->flush( );
+        socket->waitForBytesWritten( );
+
+        emit signalClintIsReady( );
+      }
+    }
+    else if ( qMessage == SOCKET_MESSAGE_FILE_READED)
+    {
+      if ( !_file.empty( ) )
+      {
+        emit signalClintIsReady( );
       }
     }
     else

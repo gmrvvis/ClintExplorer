@@ -26,6 +26,7 @@ class TcpSocketAsyncServer : public QTcpServer
     void closed();
 
   signals:
+    void signalClintIsReady();
 
   public slots:
     void newConnection();

@@ -13,9 +13,11 @@
 class ClintProcess : public QObject
 {
   Q_OBJECT
+
   public:
     explicit ClintProcess( const std::string& clintPath,
-      const std::string& clintHost, const std::string& clintPort, QObject *parent = 0 );
+      const std::string& clintHost, const std::string& clintPort,
+      QObject *parent = 0 );
 
   private:
     std::string _clintHost;
@@ -24,12 +26,15 @@ class ClintProcess : public QObject
     QWebEngineView _view;
 
   signals:
-    public slots :
-      void error(QProcess::ProcessError error);
-      void finished(int exitCode, QProcess::ExitStatus exitStatus);
-      void readyReadStandardError();
-      void readyReadStandardOutput();
-      void started();
+
+  public slots :
+    void error(QProcess::ProcessError error);
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
+    void readyReadStandardError();
+    void readyReadStandardOutput();
+    void started();
+
+    void clintIsReady();
 };
 
 #endif

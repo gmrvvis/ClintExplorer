@@ -7,7 +7,8 @@ ClintProcess::ClintProcess( const std::string& clintPath,
   , _clintPort( clintPort )
 {
   QString clintApp = QString("R");
-  std::string shiny = "shiny::runApp(appDir='" + clintPath + "',port=" + clintPort + ")";
+  std::string shiny = "shiny::runApp(appDir='" + clintPath + "',port="
+    + clintPort + ")";
   QStringList clintArguments;
     clintArguments << QString("-e");
     clintArguments << QString::fromStdString(shiny);
@@ -20,9 +21,20 @@ ClintProcess::ClintProcess( const std::string& clintPath,
     clintArguments
   );
 
-  //QObject::connect(_process.get(), SIGNAL(started()), this, SLOT(started()));
-  //QObject::connect(_process.get(), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int, QProcess::ExitStatus)));
-  QObject::connect(_process.get(), SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
+  QObject::connect( _process.get( ), SIGNAL( readyReadStandardOutput( ) ), this,
+    SLOT( readyReadStandardOutput( ) ) );
+}
+
+void ClintProcess::clintIsReady( )
+{
+  std::cout << "Starting Clint browser..." << std::endl;
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+  _view.page()->profile( )->setHttpCacheType( QWebEngineProfile::NoCache );
+  _view.setUrl( QUrl( QString::fromStdString( _clintHost + ":" + _clintPort ) ) );
+  _view.setWindowTitle( QString( "Clint - " ) + QString::fromStdString( _clintPort ) );
+  _view.showMaximized( );
 }
 
 void ClintProcess::error(QProcess::ProcessError error)
@@ -30,38 +42,37 @@ void ClintProcess::error(QProcess::ProcessError error)
   qDebug() << "Error: " << error;
 }
 
-void 	ClintProcess::finished(int exitCode, QProcess::ExitStatus exitStatus)
+void ClintProcess::finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   qDebug() << "Finished: " << exitCode;
   qApp->exit();
 }
 
-void 	ClintProcess::readyReadStandardError()
+void ClintProcess::readyReadStandardError()
 {
   qDebug() << "ReadyError";
 }
 
-void 	ClintProcess::readyReadStandardOutput()
+void ClintProcess::readyReadStandardOutput()
 {
-  //qDebug() << "readyOut";
-  //QProcess *p = (QProcess *)sender();
-  QByteArray buf = _process->readAllStandardOutput();
+  /*QByteArray buf = _process->readAllStandardOutput();
 
   QString output = buf;
   if (output.contains(QString::fromStdString("> shiny::runApp(appDir='")))
   {
+    std::cout << output.toStdString() << std::endl;
     std::cout << "Starting Clint browser..." << std::endl;
 
     std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    //_view.page()->profile( )->setHttpCacheType( QWebEngineProfile::NoCache );
+
     _view.page()->profile( )->setHttpCacheType( QWebEngineProfile::NoCache );
     _view.setUrl( QUrl( QString::fromStdString( _clintHost + ":" + _clintPort ) ) );
     _view.setWindowTitle( QString( "Clint - " ) + QString::fromStdString( _clintPort ) );
     _view.showMaximized( );
-  }
+  }*/
 }
 
-void 	ClintProcess::started()
+void ClintProcess::started()
 {
   qDebug() << "Process Started";
 }

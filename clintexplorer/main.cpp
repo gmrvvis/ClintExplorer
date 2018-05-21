@@ -34,6 +34,7 @@ int main( int argc, char* argv[] )
 {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
+  TcpSocketAsyncServer* server = nullptr;
   std::unique_ptr<ClintProcess> clintProcess;
 
   //Args
@@ -165,24 +166,37 @@ int main( int argc, char* argv[] )
     manco::ZeqManager::instance( ).init( zeqSession );
   }
 
+  if ( enableCommunication )
+  {
+    //Tcp async socket
+    server = new TcpSocketAsyncServer(
+      static_cast<quint16>( iSocketPort ), instanceId, file );
+
+    QObject::connect(server, &TcpSocketAsyncServer::closed, &app,
+      &QCoreApplication::quit);
+  }
+
   if ( !clintPath.empty( ) )
   {
     //Clint process
     std::cout << "Starting Clint process..." << std::endl;
     clintProcess.reset( new ClintProcess(
       clintPath, clintHost, std::to_string(iClintPort) ) );
-  }
 
-  if ( enableCommunication )
-  {      
-    //Tcp async socket
-    TcpSocketAsyncServer* server = new TcpSocketAsyncServer(
-      static_cast<quint16>( iSocketPort ), instanceId, file );
-    QObject::connect(server, &TcpSocketAsyncServer::closed, &app,
-      &QCoreApplication::quit);
+    if ( enableCommunication )
+    {
+      QObject::connect( server, &TcpSocketAsyncServer::signalClintIsReady,
+        clintProcess.get( ), &ClintProcess::clintIsReady );
+    }
+    else
+    {
+      clintProcess->clintIsReady( );
+    }
   }
 
   //Launch app
-  return app.exec();
+  app.exec();
+
+  return 0;
 }
 

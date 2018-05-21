@@ -12,6 +12,7 @@
 
 #define SOCKET_MESSAGE_FILE "file\n"
 #define SOCKET_MESSAGE_NOFILE "nofile\n"
+#define SOCKET_MESSAGE_FILE_READED "filereaded\n"
 #define SOCKET_MESSAGE_EXIT "exit\n"
 
 #endif
