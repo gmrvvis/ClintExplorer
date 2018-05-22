@@ -89,9 +89,8 @@ int main( int argc, char* argv[] )
     clintPath = args.get( "-ce" );
     if ( !sp1common::Files::fileExists( clintPath ) )
     {
-      std::cerr << "Error: file '" << clintPath << "' doesn't exist!"
-        << std::endl;
-      return -1;
+      sp1common::Error::throwError( sp1common::Error::ErrorType::Error,
+        "File '" + clintPath + "' doesn't exist!", true );
     }
   }
 
@@ -108,16 +107,18 @@ int main( int argc, char* argv[] )
       if( !sp1common::Maths::inRange<int>( static_cast<int>( iClintPort ),
         MIN_PORT_ALLOWED, MAX_PORT_ALLOWED ) )
       {
-        std::cout << "Invalid Clint port. Please, enter port number between " <<
-          MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
-        exit( -1 );
+        sp1common::Error::throwError( sp1common::Error::ErrorType::Error,
+          "Invalid Clint port. Please, enter port number between "
+          + std::to_string( MIN_PORT_ALLOWED ) + " and "
+          + std::to_string( MAX_PORT_ALLOWED ), true );
       }
     }
     catch( ... )
     {
-      std::cout << "Invalid Clint port. Please, enter port number between " <<
-        MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
-      exit( -1 );
+        sp1common::Error::throwError( sp1common::Error::ErrorType::Error,
+          "Invalid Clint port. Please, enter port number between "
+          + std::to_string( MIN_PORT_ALLOWED ) + " and "
+          + std::to_string( MAX_PORT_ALLOWED ), true );
     }
   }
 
@@ -176,7 +177,7 @@ int main( int argc, char* argv[] )
       &QCoreApplication::quit);
   }
 
-  if ( !clintPath.empty( ) )
+  if ( ( !clintHost.empty( ) ) && ( iClintPort != 0 ) )
   {
     //Clint process
     std::cout << "Starting Clint process..." << std::endl;
@@ -195,8 +196,6 @@ int main( int argc, char* argv[] )
   }
 
   //Launch app
-  app.exec();
-
-  return 0;
+  return app.exec();
 }
 
