@@ -110,20 +110,32 @@ void TcpSocketAsyncServer::manageMessage( const std::string& str )
 
     std::string key;
 
-    std::vector< std::string > ids_vector1 =
-      manco::ZeqManager::split( str, "&" );
+    try
+    {
+      std::vector< std::string > ids_vector1 =
+        manco::ZeqManager::split( str, "&" );
 
-    std::vector< std::string > ids_vector =
-      manco::ZeqManager::split(ids_vector1[ 4 ], ";" );
+      std::vector< std::string > ids_vector =
+        manco::ZeqManager::split( ids_vector1[ 4 ], ";" );
 
-    unsigned int color_red= atoi( ids_vector1[ 1 ].c_str( ) );
-    unsigned int color_green= atoi( ids_vector1[ 2 ].c_str( ) );
-    unsigned int color_blue= atoi( ids_vector1[ 3 ].c_str( ) );
+      unsigned int color_red= atoi( ids_vector1[ 1 ].c_str( ) );
+      unsigned int color_green= atoi( ids_vector1[ 2 ].c_str( ) );
+      unsigned int color_blue= atoi( ids_vector1[ 3 ].c_str( ) );
 
-    std::string key_name = manco::ZeqManager::getKeyOwner( ids_vector1[ 0 ],
-      _owner );
+      std::string key_name = manco::ZeqManager::getKeyOwner( ids_vector1[ 0 ],
+        _owner );
 
-    manco::ZeqManager::instance( ).publishSyncGroup( key_name, ids_vector1[ 0 ],
-      _owner, ids_vector, color_red, color_green, color_blue);
+      manco::ZeqManager::instance( ).publishSyncGroup( key_name,
+        ids_vector1[ 0 ], _owner, ids_vector, color_red, color_green,
+        color_blue );
+
+      sp1common::Debug::consoleMessage( "Published sync group" );
+    }
+    catch (...)
+    {
+      sp1common::Error::throwError( sp1common::Error::ErrorType::Warning,
+        "Unknown message format or incomplete message. Skipping message publication"
+        , false );
+    }
   }
 }
