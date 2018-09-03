@@ -87,7 +87,7 @@ int main( int argc, char* argv[] )
   if ( args.has( "-ce" ) )
   {
     clintPath = args.get( "-ce" );
-    if ( !sp1common::Files::fileExists( clintPath ) )
+    if ( !sp1common::Files::exist( clintPath ) )
     {
       sp1common::Error::throwError( sp1common::Error::ErrorType::Error,
         "File '" + clintPath + "' doesn't exist!", true );
