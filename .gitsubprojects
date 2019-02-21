@@ -1,2 +1,3 @@
 # -*- mode: cmake -*-
-git_subproject(manco git@gitlab.gmrv.es:retrieval/manco.git syncXml)
+git_subproject(manco git@gitlab.gmrv.es:retrieval/manco.git master)
+git_subproject(vishnucommon git@gitlab.gmrv.es:cbbsp1/vishnucommon.git master)

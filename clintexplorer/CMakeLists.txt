@@ -1,3 +1,11 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#   ClintExplorer
+#   2017-2019(c) GMRV / Universidad Rey Juan Carlos
+#   gmrv@gmrv.es
+#   www.gmrv.es
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 source_group(\\ FILES CMakeLists.txt)
 
 set(Name ClintExplorer)
@@ -17,25 +25,32 @@ configure_file(${CMAKE_SOURCE_DIR}/CMake/common/cpp/version.cpp
 set(CLINTEXPLORER_SOURCES
   ${PROJECT_BINARY_DIR}/src/version.cpp
   main.cpp
+  TcpSocketAsyncServer.cpp
+  ClintProcess.cpp
 )
 
 set(CLINTEXPLORER_HEADERS
   ${PROJECT_BINARY_DIR}/include/clintexplorer/version.h
+  TcpSocketAsyncServer.hpp
+  ClintProcess.hpp
+  Definitions.hpp
 )
 
 set(CLINTEXPLORER_LINK_LIBRARIES
-	${Boost_SYSTEM_LIBRARY}
-	${Boost_THREAD_LIBRARY}
-	manco
+  Qt5::Core
+  Qt5::WebEngineWidgets
+  Qt5::WebSockets
+  manco
+  vishnucommon
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_BINARY_DIR}/include ${PROJECT_BINARY_DIR}/src)
 
-MESSAGE(${Boost_SYSTEM_LIBRARY})
+if( MSVC )
+  add_definitions("-W4")
+  # Static build
+  add_definitions( -DCLINTEXPLORER_STATIC )
+endif( )
 
-#if(NOT BOOST_FOUND)
-#  return()
-#else()
-	common_application(ClintExplorer)
-#endif()
+common_application(ClintExplorer)
