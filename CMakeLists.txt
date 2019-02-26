@@ -6,7 +6,8 @@
 #   www.gmrv.es
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-cmake_minimum_required( VERSION 3.1 )
+
+cmake_minimum_required( VERSION 3.6 )
 set( PROJECT_VERSION_MAJOR "1" )
 set( PROJECT_VERSION_MINOR "0" )
 set( PROJECT_VERSION_PATCH "1" )
@@ -36,7 +37,7 @@ include(GitExternal)
 
 set( CLINTEXPLORER_DESCRIPTION "Clint Explorer" )
 set( CLINTEXPLORER_MAINTAINER "Gonzalo Bayo Martinez <gonzalo.bayo@urjc.es>" )
-set( CLINTEXPLORER_LICENSE "" )
+set( CLINTEXPLORER_LICENSE "GPLv3" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 include(Common)
@@ -47,15 +48,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 common_find_package( Qt5Core SYSTEM REQUIRED )
 common_find_package( Qt5WebEngineWidgets SYSTEM REQUIRED )
 common_find_package( Qt5WebSockets SYSTEM REQUIRED )
-common_find_package( manco REQUIRED )
-common_find_package( vishnucommon REQUIRED )
+common_find_package( ManCo REQUIRED )
+common_find_package( VishnuCommon REQUIRED )
 
 list(APPEND CLINTEXPLORER_DEPENDENT_LIBRARIES 
   Qt5::Core
   Qt5::WebEngineWidgets
   Qt5::WebSockets
-  manco
-  vishnucommon
+  ManCo
+  VishnuCommon
 )
 
 common_find_package_post( )
@@ -65,7 +66,7 @@ common_find_package_post( )
 
 add_subdirectory( clintexplorer )
 
-if( MSVC )
+if( MSVC )  
   # Set ClintExplorer as startup project on Visual Studio, CMake v3.6
   if( CMAKE_VERSION VERSION_GREATER 3.6 )
     set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ClintExplorer )

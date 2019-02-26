@@ -1,4 +1,5 @@
 /*
+ * Clint Explorer
  * Copyright (c) 2017-2019 GMRV/URJC.
  *
  * Authors: Cristian Rodriguez Bernal <ccrisrober@gmail.com>
@@ -6,19 +7,18 @@
  *
  * This file is part of ClintExplorer <https://gitlab.gmrv.es/retrieval/ClintExplorer>
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License version 3.0 as published
- * by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
- * details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <cstdlib>
@@ -44,12 +44,11 @@ void showHelpInfo( char *argv0 )
     << "\t-h Show help information\n"
     << "\t-z ZeroEQ session\n"
     << "\t-sp Socket Port\n"
-    << "\t-ce Clint Executable Path\n"
     << "\t-ch Clint Host\n"
     << "\t-cp Clint Port\n"
     << "\t-f File\n\n"
     << "Example:\n\n"
-    << "\t ClintExplorer -z hbp:// -sp 31400 -ce \"../Clint/CLINTv5.R\" -ch \"http://localhost\" -cp 8765\n";
+    << "\t ClintExplorer -z hbp:// -sp 31400 -ch \"http://localhost\" -cp 8765\n";
   std::cout << message.str( ) << std::endl;
 }
 
@@ -59,17 +58,25 @@ int main( int argc, char* argv[] )
   QApplication app(argc, argv);
   TcpSocketAsyncServer* server = nullptr;
   std::unique_ptr<ClintProcess> clintProcess;
+  std::string execPath = getExecPath( );
 
   //Args
   std::string zeqSession( "" );
   std::string socketPort( "" );
   unsigned int iSocketPort( 0 );
-  std::string clintPath( "" );
+  std::string clintPath( execPath + "R/CLINTv5.R" );
   std::string clintHost( "" );
   std::string clintPort( "" );
   unsigned int iClintPort( 0 );
   std::string instanceId( "" );
   std::string file( "" );
+
+  //Clint R Path
+  if ( !vishnucommon::Files::exist( clintPath ) )
+  {
+    vishnucommon::Error::throwError( vishnucommon::Error::ErrorType::Error,
+      "File '" + clintPath + "' doesn't exist!", true );
+  }
 
   //Parse args
   vishnucommon::Args args( argc, argv );
@@ -103,17 +110,6 @@ int main( int argc, char* argv[] )
       std::cout << "Invalid socket port. Please, enter port number between "
         << MIN_PORT_ALLOWED << " and " << MAX_PORT_ALLOWED << std::endl;
       exit( -1 );
-    }
-  }
-
-  //Clint R Path
-  if ( args.has( "-ce" ) )
-  {
-    clintPath = args.get( "-ce" );
-    if ( !vishnucommon::Files::exist( clintPath ) )
-    {
-      vishnucommon::Error::throwError( vishnucommon::Error::ErrorType::Error,
-        "File '" + clintPath + "' doesn't exist!", true );
     }
   }
 
