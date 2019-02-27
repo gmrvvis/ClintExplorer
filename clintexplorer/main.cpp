@@ -2,7 +2,7 @@
  * Clint Explorer
  * Copyright (c) 2017-2019 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal <ccrisrober@gmail.com>
+ * Authors: Cristian Rodriguez Bernal <cristian.rodriguez@urjc.es>
  *          Gonzalo Bayo Martinez <gonzalo.bayo@urjc.es>
  *
  * This file is part of ClintExplorer <https://gitlab.gmrv.es/retrieval/ClintExplorer>
