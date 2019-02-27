@@ -20,8 +20,8 @@ ClintExplorer has been successfully built and tested on Ubuntu 18.04 /
 Windows 10. The following steps are for build:
 
 ```bash
-$ git clone git@gitlab.gmrv.es:retrieval/clintexplorer.git
-$ mkdir clintexplorer/build && cd clintexplorer/build
+$ git clone https://github.com/gmrvvis/ClintExplorer.git
+$ mkdir ClintExplorer/build && cd ClintExplorer/build
 $ cmake .. [-DCLONE_SUBPROJECTS=ON]
 ```
 
